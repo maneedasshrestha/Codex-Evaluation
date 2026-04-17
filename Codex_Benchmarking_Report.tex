@@ -20,9 +20,9 @@
 \maketitle
 
 \begin{abstract}
-Codex (OpenAI, 2026), powered by the unified GPT-5.4 architecture, is OpenAI's agentic coding assistant featuring cloud-native sandboxed execution, git worktree isolation, purpose-trained context compaction, and a dual-layered security model. We evaluate it as an AI coding assistant through a practitioner benchmark involving real feature implementation in a production SaaS codebase, assessing eight dimensions: workflow integration, code generation quality, contextual reasoning, architectural adherence, problem-solving capability, documentation generation, operational characteristics, and overall productivity impact.
+Codex (OpenAI, 2026), powered by the GPT-5.4 architecture, is OpenAI's agentic coding assistant. It runs tasks in cloud sandboxes, uses git worktrees to keep work isolated, compacts its context natively to support long sessions, and includes a two-layer security model. We evaluate it as an AI coding assistant through a practitioner benchmark involving real feature implementation in a production SaaS codebase, across eight areas: workflow integration, code generation quality, contextual reasoning, architectural adherence, problem-solving capability, documentation generation, operational characteristics, and overall productivity impact.
 
-Using a 26-criterion rubric (weighted mean: 4.50/5.00, 90.0\%), published benchmark triangulation verified against primary sources, and practitioner community sentiment analysis, we find that Codex excels at analytical problem solving, fast-mode execution velocity, sustained long-horizon task completion, and technical debt remediation. Its SWE-Bench Pro leadership (57.7\% vs.\ Claude Opus 4.6's 53.4\%) reflects superior novel algorithmic reasoning, while its OSWorld-Verified score (75.0\%) leads all frontier AI models in desktop automation, exceeding the human expert threshold (72.4\%) by a substantial 2.6 percentage point margin. Key limitations include a documented tendency toward destructive execution under underspecified prompts, security and IP constraints inherent to cloud-hosted architectures, and rate-limiting friction on professional Pro-tier subscriptions. These findings offer practical guidance for teams evaluating agentic AI coding assistants for production use.
+Using a 26-criterion rubric (weighted mean: 4.50/5.00, 90.0\%), benchmark data verified against primary sources, and developer community feedback, we find that Codex is strong at analytical problem solving, fast execution on well-defined tasks, long-running autonomous sessions, and technical debt clean-up. Its SWE-Bench Pro score (57.7\% vs.\ Claude Opus 4.6's 53.4\%) shows it handles novel engineering problems better, and its OSWorld-Verified score (75.0\%) puts it ahead of the human expert baseline (72.4\%) on desktop automation. Key weaknesses include a tendency to push ahead destructively on vague tasks, IP concerns from cloud-hosted code execution, and rate-limit friction on the Pro subscription tier. These findings give development teams a practical basis for evaluating Codex as part of their AI toolchain.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -30,98 +30,98 @@ Codex, GPT-5.4, agentic AI, coding assistant, benchmark, git worktrees, cloud ex
 \end{IEEEkeywords}
 
 \section{Introduction}
-AI-assisted software development has entered a qualitatively new phase in 2026. The industry has moved decisively beyond single-context autocomplete assistants toward highly autonomous, long-horizon agentic systems capable of orchestrating complex multi-file codebase refactoring, executing deterministic terminal operations, and navigating desktop environments natively. At the epicenter of this convergence is OpenAI's release of the unified GPT-5.4 architecture, which fully absorbed the capabilities of the previously dedicated GPT-5.3-Codex model into a single frontier system, paired with a substantially revamped Codex standalone application.
+AI-assisted software development has changed significantly in 2026. The industry has shifted away from single-context autocomplete tools toward autonomous systems that can refactor large codebases, run terminal commands, and navigate desktop environments with minimal human input. A key part of this shift is OpenAI's GPT-5.4 architecture, which merged the older GPT-5.3-Codex model into a single system and launched a redesigned Codex application alongside it.
 
-Codex distinguishes itself from competing agentic tools through several architectural innovations that have no direct analogues in locally-executed alternatives: cloud-native sandboxed container execution, git worktree isolation enabling true parallel task processing across multiple projects, and a purpose-trained context compaction mechanism that enables coherent multi-session operation far exceeding standard context window limits. These features collectively position Codex as the primary execution-focused counterpart to Claude Code in the frontier agentic tools landscape.
+Codex stands out from competing tools in a few concrete ways: it runs tasks in cloud containers rather than on the developer's machine, uses git worktrees to keep each task isolated so multiple projects can run at the same time, and includes a compaction capability that lets it work through sessions much longer than its context window would normally allow.
 
 \subsection{Codex: Technical Overview}
 Codex can be accessed through multiple channels:
 \begin{itemize}
-    \item \textbf{Standalone application}: A full-featured desktop app superseding the legacy CLI tool, supporting customizable skills, automation pipelines, and native Machine Context Protocol (MCP) server toggles \cite{openai_codex_docs}
-    \item \textbf{VS Code extension}: Fully compatible with advanced forks including Cursor and Windsurf \cite{openai_codex_docs}
-    \item \textbf{JetBrains IDE integration}: Native support for IntelliJ, PyCharm, Rider, and WebStorm \cite{openai_codex_docs}
-    \item \textbf{CLI (open-source)}: Available on GitHub, configurable via layered \texttt{.codex/config.toml} hierarchies with predictable resolution precedence
+    \item \textbf{Standalone application}: A desktop app that replaced the older CLI tool. It supports custom skills, automation pipelines, and native Machine Context Protocol (MCP) server support \cite{openai_codex_docs}
+    \item \textbf{VS Code extension}: Works with VS Code forks including Cursor and Windsurf \cite{openai_codex_docs}
+    \item \textbf{JetBrains IDE integration}: Supports IntelliJ, PyCharm, Rider, and WebStorm \cite{openai_codex_docs}
+    \item \textbf{CLI (open-source)}: Available on GitHub, configured through layered \texttt{.codex/config.toml} files
 \end{itemize}
 
-The model's most distinctive architectural characteristics include:
+The model's most notable characteristics include:
 \begin{itemize}
-    \item \textbf{Cloud worktree execution}: Tasks run in isolated OpenAI-managed containers with per-task git worktree separation, enabling parallel execution across multiple projects simultaneously without consuming local developer machine resources \cite{openai_cloud_envs}
-    \item \textbf{Native context compaction}: GPT-5.4 is purpose-trained to operate coherently across multiple context windows---not mere summarization, but a model-level architectural capability enabling sessions exceeding 24 hours with approximately 30\% fewer thinking tokens than predecessor models \cite{openai_compaction}
-    \item \textbf{1.05M token context window}: The largest context window among frontier coding models, complemented by a Tool Search feature that dynamically loads tool definitions and API schemas on demand, reducing effective input token consumption by approximately 47\% for agentic tasks \cite{openai_compaction}
-    \item \textbf{SWE-Bench Pro leadership}: 57.7\% on novel, non-gameable engineering tasks, outperforming Claude Opus 4.6 (53.4\%) by a 4.3 percentage point margin reflecting genuine superiority in first-principles algorithmic reasoning \cite{morphllm2026}
-    \item \textbf{Dual-layered security model}: Sandbox Mode (technical execution boundaries) and Approval Policy Engine (human oversight checkpoints) operating as independent, composable controls with platform-native enforcement via macOS Seatbelt, Linux \texttt{bubblewrap}, and Windows WSL2 \cite{openai_codex_docs}
-    \item \textbf{Fast Mode}: Delivers up to 1.5$\times$ faster token velocity using the identical underlying model intelligence, without quality trade-offs, critical for maintaining developer flow state on well-defined tasks \cite{holter2026}
-    \item \textbf{AGENTS.md project instruction hierarchy}: A deterministic, version-controllable file-based instruction system that the GPT-5.4 model is explicitly fine-tuned to follow, providing more predictable constraint adherence than free-form session prompting
+    \item \textbf{Cloud worktree execution}: Tasks run in isolated OpenAI-managed containers, with a separate git worktree per task. Multiple projects can run in parallel without using local machine resources \cite{openai_cloud_envs}
+    \item \textbf{Native context compaction}: GPT-5.4 is trained to work across multiple context windows by compacting earlier parts of a session. This is not simple summarization; it is a core model capability that allows sessions to run for 24 hours or more while using roughly 30\% fewer reasoning tokens than earlier models \cite{openai_compaction}
+    \item \textbf{1.05M token context window (experimental)}: Codex includes experimental support for a 1.05M token context window, configurable via \texttt{model\_context\_window} and \texttt{model\_auto\_compact\_token\_limit}. The standard production window is 272K tokens; requests that exceed it are charged at 2$\times$ the normal rate. This is combined with a Tool Search feature that loads tool definitions on demand rather than upfront, reducing input token use by roughly 47\% for agentic tasks \cite{openai_compaction}
+    \item \textbf{SWE-Bench Pro score}: 57.7\% on novel, non-gameable engineering tasks, ahead of Claude Opus 4.6 (53.4\%) by 4.3 percentage points \cite{morphllm2026}
+    \item \textbf{Two-layer security model}: Sandbox Mode controls what the agent can technically do, and the Approval Policy Engine decides when it must ask for permission before acting. Both work independently and use OS-level enforcement on macOS (Seatbelt), Linux (\texttt{bubblewrap}), and Windows (WSL2) \cite{openai_codex_docs}
+    \item \textbf{Fast Mode}: Delivers up to 1.5$\times$ faster output using the same underlying model, without a quality trade-off. Useful for keeping developer flow on straightforward tasks \cite{holter2026}
+    \item \textbf{AGENTS.md project instructions}: A file-based instruction system that GPT-5.4 is fine-tuned to follow. Instructions are version-controlled and more reliably followed than free-form session prompts
 \end{itemize}
 
 \subsection{Research Questions}
 This paper addresses three primary research questions:
 
-\textbf{Q1}: How effectively does Codex (GPT-5.4) function as an AI coding assistant in a structured, convention-driven production codebase, specifically in terms of analytical problem solving, sustained execution, and architectural reasoning?
+\textbf{Q1}: How effectively does Codex (GPT-5.4) work as an AI coding assistant in a structured, convention-driven production codebase, in terms of analytical problem solving, sustained execution, and architectural reasoning?
 
-\textbf{Q2}: What are the observable operational characteristics of Codex---including its cloud execution model, context compaction behavior, rate-limiting profile, and cost-effectiveness---that affect its suitability for daily professional use?
+\textbf{Q2}: What are the observable operational characteristics of Codex, including its cloud execution model, context compaction behavior, rate-limiting, and cost, that affect its suitability for daily professional use?
 
-\textbf{Q3}: How do Codex's unique architectural features---git worktrees, cloud-native sandboxing, native compaction, and Tool Search---provide a competitive edge over single-context and locally-executed agentic alternatives?
+\textbf{Q3}: How do Codex's key features, specifically git worktrees, cloud sandboxing, native compaction, and Tool Search, give it an edge over single-context and locally-executed tools?
 
 \section{Background and Related Work}
 
 \subsection{Benchmarks for AI Code Generation}
-The evaluation of AI coding assistants has evolved through several benchmark generations. HumanEval \cite{chen2021evaluating} established an early standard through 164 Python programming problems but has been widely criticized for narrow scope and susceptibility to data contamination \cite{fryer2024hallucination}. SWE-bench \cite{jimenez2024swebench} advanced the field significantly by using real GitHub issues requiring multi-file patches.
+Evaluation of AI coding tools has gone through several rounds of improvement. HumanEval \cite{chen2021evaluating} was an early standard using 164 Python problems, but has been criticized for being too narrow and prone to data contamination \cite{fryer2024hallucination}. SWE-bench \cite{jimenez2024swebench} improved on this by using real GitHub issues that require changes across multiple files.
 
-The SWE-Bench ecosystem has itself bifurcated. SWE-Bench Verified, which tests standardized and heavily vetted pull request resolution, shows near-parity between GPT-5.4 ($\sim$80.0\%) and Claude Opus 4.6 (81.4\%), with Opus 4.6's advantage reflecting superior meticulous execution of well-defined patterns \cite{vellum2026}. The more consequential metric is \textbf{SWE-Bench Pro}, specifically engineered to resist training data memorization by forcing agents to rely on novel logical reasoning rather than pattern matching. On this benchmark, GPT-5.4 achieves 57.7\%, outperforming Claude Opus 4.6's 53.4\%---a 4.3 percentage point advantage that reflects genuine superiority in algorithmic synthesis and structural deduction when confronted with problems outside the training distribution \cite{morphllm2026}.
+The SWE-Bench ecosystem has since split into two variants. SWE-Bench Verified tests well-documented, standardized pull request resolution. Here, GPT-5.4 ($\sim$80.0\%) and Claude Opus 4.6 (81.4\%) are roughly tied, with Opus 4.6 slightly ahead on consistent execution of known patterns \cite{vellum2026}. The more meaningful metric for real-world use is \textbf{SWE-Bench Pro}, which is designed to prevent pattern matching by requiring agents to reason through genuinely novel problems. On this benchmark, GPT-5.4 scores 57.7\% against Claude Opus 4.6's 53.4\%, a 4.3 percentage point gap that reflects better first-principles reasoning on unfamiliar problems \cite{morphllm2026}.
 
-OSWorld-Verified extends evaluation into autonomous desktop navigation, measuring an AI agent's ability to interact with desktop GUIs, analyze high-resolution screenshots, and complete multi-step workflows. GPT-5.4's score of 75.0\% leads frontier AI models on complex desktop automation tasks, exceeding the human expert baseline of 72.4\% by a 2.6 percentage point margin and outperforming Claude Opus 4.6 (72.7\%) by 2.3 percentage points, powered by a vision architecture that processes images containing over 10 million pixels without destructive compression \cite{nxcode2026}.
+OSWorld-Verified tests autonomous desktop operation, including interacting with GUIs and completing multi-step workflows. GPT-5.4 scores 75.0\%, ahead of both the human expert baseline (72.4\%) and Claude Opus 4.6 (72.7\%), supported by a vision system that handles images with over 10 million pixels without compression loss \cite{nxcode2026}.
 
 \subsection{Developer Productivity Studies}
-A landmark randomized controlled trial involving over 4,000 developers found that GitHub Copilot reduced mean task completion time by approximately 55\% for new coding tasks, with junior developers showing disproportionate gains \cite{peng2023copilot}. McKinsey Global Institute reported a 26\% productivity increase in developer output when using AI tools, measured as story points per sprint \cite{mckinsey2023}.
+A large randomized controlled trial with over 4,000 developers found that GitHub Copilot cut average task completion time by roughly 55\% on new coding work, with junior developers seeing the biggest gains \cite{peng2023copilot}. McKinsey Global Institute found a 26\% increase in developer output when using AI tools, measured by story points per sprint \cite{mckinsey2023}.
 
-A contrarian finding from METR \cite{metr2025} observed a 19\% \textit{increase} in task completion time for experienced developers on complex, unfamiliar codebases. This suggests that productivity gains from AI coding tools are not uniform and depend heavily on codebase familiarity, task clarity, and the degree to which developers retain architectural ownership. These findings underscore the importance of the \texttt{AGENTS.md} discipline: well-specified constraints reduce the ambiguity that drives both METR-style slowdowns and Codex's documented destructive execution tendency.
+A contrasting result from METR \cite{metr2025} found a 19\% \textit{increase} in task completion time for experienced developers working on complex, unfamiliar codebases. This points to the fact that AI coding tools do not help equally across all situations; gains depend heavily on how well the task is defined and whether the developer stays in control of the architecture. This finding also reinforces the value of a well-written \texttt{AGENTS.md}: clear constraints reduce ambiguity, which is the main driver of both slower workflows and Codex's known tendency to charge ahead on underspecified tasks.
 
 \subsection{Comparative Landscape}
-As of 2026, agentic coding tools have bifurcated along two key architectural philosophies:
+As of 2026, agentic coding tools split along two main lines:
 \begin{itemize}
-    \item \textbf{IDE-first vs.\ cloud-first}: Cursor and Copilot (deep editor integration, single-context) vs.\ Claude Code and Codex (repository-wide autonomy, with Codex uniquely offering cloud-native container execution)
-    \item \textbf{Parallel orchestration vs.\ sustained sequential execution}: Claude Code's Agent Teams framework (5--6 parallel specialized agents with proactive QA dispatch) vs.\ Codex's sustained long-horizon sequential execution with delegation to cheaper submodels for routine subtasks
+    \item \textbf{IDE-first vs.\ cloud-first}: Cursor and Copilot integrate directly into the editor and work in a single context. Claude Code and Codex work at the repository level, with Codex uniquely offering cloud container execution
+    \item \textbf{Parallel orchestration vs.\ sustained sequential execution}: Claude Code can spin up 5 to 6 specialized agents working in parallel, with automatic QA checks when changes are made. Codex focuses on sustained single-agent execution and delegates simpler subtasks to cheaper models
 \end{itemize}
 
-Codex occupies a distinctive position: the only frontier tool offering true cloud-native parallel task execution via git worktrees, where each task runs in an isolated OpenAI-managed container. This architecture has no direct analogue in Claude Code's local execution model and represents a fundamental operational difference for teams managing multiple concurrent workstreams.
+Codex is the only current tool that runs tasks in cloud containers with git worktree isolation per task, giving each piece of work its own clean copy of the repository. Claude Code runs locally and manages parallelism through sub-agents rather than container isolation.
 
 \section{Methodology}
 
 \subsection{Evaluation Design}
-This study uses a practitioner observational design \cite{creswell2018mixed}: developers used Codex as the primary AI assistant over a structured evaluation period for real production tasks, and the resulting experience and outputs were evaluated using three independent instruments, supplemented by cross-verified external benchmark triangulation and practitioner community sentiment analysis drawn from developer forums, technical blogs, and comparative reviews.
+This study uses a practitioner observational design \cite{creswell2018mixed}: developers used Codex as the primary AI assistant over a structured evaluation period on real production tasks. The outputs and experience were assessed using three independent instruments, plus external benchmark data and developer community feedback from forums, blogs, and comparison articles.
 
 \subsection{Evaluation Environment}
 The evaluation was conducted on a production SaaS platform for social media content scheduling. The codebase is a monorepo comprising:
 \begin{itemize}
-    \item \textbf{Backend}: Python FastAPI following strict Clean Architecture layering (API $\rightarrow$ Controller $\rightarrow$ UseCase $\rightarrow$ Domain $\rightarrow$ Infrastructure)
+    \item \textbf{Backend}: Python FastAPI following Clean Architecture (API $\rightarrow$ Controller $\rightarrow$ UseCase $\rightarrow$ Domain $\rightarrow$ Infrastructure)
     \item \textbf{Frontend}: Flutter mobile application with Clean Framework and Riverpod v3 state management
 \end{itemize}
 
-The codebase represents an authentic evaluation environment: non-trivial architectural conventions, strict layer boundaries, an established pattern library Codex was expected to discover and follow, and a running Docker Compose stack for integration verification. An \texttt{AGENTS.md} file at the repository root provided explicit architectural conventions, key file locations, build and test commands, and negative constraints.
+The codebase is a realistic test environment: it has non-trivial architectural conventions, strict layer boundaries, an established set of patterns Codex needed to find and follow, and a running Docker Compose stack for integration testing. An \texttt{AGENTS.md} file at the repository root provided explicit architectural rules, key file paths, build and test commands, and a list of negative constraints.
 
 \subsection{Evaluation Tasks}
 Codex was evaluated across multiple task categories over a structured evaluation period:
 
-\textbf{Phase 1}: Setup and initial configuration, Fast Mode vs.\ Standard Mode comparison, cloud worktree initialization and parallel task execution test
+\textbf{Phase 1}: Setup and initial configuration, Fast Mode vs.\ Standard Mode comparison, cloud worktree initialization and parallel task execution
 
-\textbf{Phase 2}: Context retention and \texttt{AGENTS.md} constraint fidelity testing, context compaction behavior monitoring over extended multi-hour sessions
+\textbf{Phase 2}: Context retention and \texttt{AGENTS.md} constraint fidelity across multi-hour sessions, including monitoring behavior through compaction events
 
-\textbf{Phase 3}: Full-stack feature implementation (Pinterest default board selection, 24 files modified/created) via cloud sandbox execution with git worktree isolation
+\textbf{Phase 3}: Full-stack feature implementation (Pinterest default board selection, 24 files modified or created) run through cloud sandbox with git worktree isolation
 
-\textbf{Phase 4}: Sustained execution sprint evaluation---technical debt identification and automated legacy refactoring over multi-hour autonomous sessions
+\textbf{Phase 4}: Sustained execution sprint, including technical debt identification and automated legacy refactoring over multi-hour autonomous sessions
 
-\textbf{Phase 5}: Bug identification in existing codebase, cross-model audit workflow (Codex reviewing Claude-generated code), and documentation generation assessment
+\textbf{Phase 5}: Bug identification in existing codebase, cross-model audit workflow (Codex reviewing Claude-generated code), and documentation generation
 
 \subsection{Evaluation Instruments}
 
-\textbf{Instrument 1: Quantitative Rubric}. Developers rated Codex on a 26-criterion rubric spanning eight categories: Workflow and Setup, Code Generation Quality, Context and Memory Management, Architecture and Planning, Problem Solving, Operational Characteristics, Documentation, and Overall Productivity Impact. Each criterion was scored 1 (critically deficient) to 5 (excellent).
+\textbf{Instrument 1: Quantitative Rubric}. Developers rated Codex on a 26-criterion rubric across eight categories: Workflow and Setup, Code Generation Quality, Context and Memory Management, Architecture and Planning, Problem Solving, Operational Characteristics, Documentation, and Overall Productivity Impact. Each criterion was scored 1 (critically deficient) to 5 (excellent).
 
-\textbf{Instrument 2: AGENTS.md Constraint Compliance Evaluation}. A structured test assessing Codex's fidelity to project-level architectural constraints defined in \texttt{AGENTS.md}. The evaluation measured layer boundary adherence across the full Clean Architecture stack, naming convention consistency, build command compliance, and constraint persistence across multi-session and post-compaction execution windows. This instrument directly leverages Codex's fine-tuned instruction-following capability and has no exact analogue in tools lacking a comparable deterministic project instruction mechanism.
+\textbf{Instrument 2: AGENTS.md Constraint Compliance Evaluation}. A structured test of how well Codex followed project-level architectural constraints from \texttt{AGENTS.md}. The test measured adherence to Clean Architecture layer boundaries, naming convention consistency, build command compliance, and whether constraints held up after compaction events. This instrument is specific to Codex's instruction system and does not have a direct equivalent for tools without comparable file-based project instructions.
 
-\textbf{Instrument 3: External Benchmark Triangulation}. Observed behavior was contextualized against published benchmarks (SWE-Bench Pro, OSWorld-Verified, Terminal-Bench 2.0, Toolathlon, BrowseComp, MMMU Pro), practitioner community sentiment analysis, and comparative tool analyses. All benchmark figures were independently verified against primary sources including BenchLM \cite{benchlm2026}, Vellum AI \cite{vellum2026}, official OpenAI and Anthropic documentation, and the MorphLLM SWE-Bench Pro leaderboard \cite{morphllm2026}.
+\textbf{Instrument 3: External Benchmark Triangulation}. Observed behavior was compared against published benchmarks (SWE-Bench Pro, OSWorld-Verified, Terminal-Bench 2.0, Toolathlon, BrowseComp, MMMU Pro), developer community feedback, and comparative tool reviews. All benchmark figures were checked against primary sources including BenchLM \cite{benchlm2026}, Vellum AI \cite{vellum2026}, official OpenAI and Anthropic documentation, and the MorphLLM SWE-Bench Pro leaderboard \cite{morphllm2026}.
 
-\textbf{Measurement note}. Rubric scores are practitioner observational ratings from this evaluation period and should be interpreted as internal comparative signals. Benchmark figures sourced from third-party evaluators reflect specific evaluation configurations and scaffolding conditions that may differ across assessments.
+\textbf{Measurement note}. Rubric scores reflect developer observations from this evaluation and should be read as internal reference points. Benchmark figures from third-party sources depend on their specific evaluation setup and may differ from other published results.
 
 \section{Results}
 
@@ -205,7 +205,7 @@ Overall Impact & Productivity Observations & 5 \\
 \end{table}
 
 \subsection{External Benchmark Triangulation}
-Table~\ref{tab:benchmarks} presents Codex's performance across major AI coding and agentic benchmarks, compared against Claude Opus 4.6. All figures are sourced from independent evaluators and cross-verified against official primary documentation.
+Table~\ref{tab:benchmarks} shows Codex's scores across major benchmarks, compared against Claude Opus 4.6. All figures have been checked against primary sources.
 
 \begin{table*}[!t]
 \caption{Codex (GPT-5.4) vs.\ Claude Opus 4.6: Key Benchmark Results}
@@ -225,120 +225,119 @@ BrowseComp & 82.7\% & \textbf{84.0\%} & Multi-step agentic web search \\
 MMMU Pro (w/ tools) & \textbf{81.2\%} & 77.3\% & Visual \& multimodal reasoning \\
 MRCR v2 (1M context) & $\sim$70.0\%$^\dagger$ & \textbf{76.0\%} & Long-context retrieval \\
 \bottomrule
-\multicolumn{4}{@{}l}{\footnotesize $^\dagger$GPT-5.4 1M-context MRCR score unverifiable from indexed sources; approximate.}
+\multicolumn{4}{@{}l}{\footnotesize $^\dagger$GPT-5.4 1M-context MRCR score unverifiable from indexed sources. Note: 1M context is experimental in Codex;} \\
+\multicolumn{4}{@{}l}{\footnotesize standard window is 272K. Requests exceeding 272K are billed at 2$\times$ the normal rate.}
 \end{tabular}
 \end{table*}
 
 \subsection{AGENTS.md Constraint Compliance Evaluation}
-Codex demonstrated strong and consistent fidelity to project-level architectural constraints specified in \texttt{AGENTS.md}. The deterministic instruction hierarchy---CLI flags $\rightarrow$ project-scoped \texttt{AGENTS.md} files $\rightarrow$ global user configuration $\rightarrow$ system defaults---was respected across all evaluation sessions, including post-compaction segments where free-form session context had been pruned.
+Codex followed the project-level constraints in \texttt{AGENTS.md} consistently throughout the evaluation. The instruction hierarchy, where CLI flags override project files, which override global config, which overrides system defaults, held up across all sessions including ones where earlier context had been compacted away.
 
 Key findings from the compliance evaluation:
 \begin{itemize}
-    \item Clean Architecture layer boundaries were enforced without per-prompt reminders across the 24-file feature implementation
-    \item \texttt{AGENTS.md}-specified naming conventions and state management patterns persisted through context compaction events; file-based instructions proved significantly more durable than equivalent free-form session instructions
-    \item Negative constraints (``do not modify files outside this directory'') were honored in Worktree and Cloud execution modes, with the git worktree boundary providing an additional technical enforcement layer
-    \item Feature Planning scored 4/5 rather than 5/5, reflecting cases where Codex bypassed the planning phase on ambiguous sub-tasks and proceeded directly to code generation---a manifestation of the rushing behavior documented in the practitioner literature \cite{wiegold2026}
+    \item Clean Architecture layer boundaries were maintained across the 24-file feature implementation without any per-prompt reminders
+    \item Naming conventions and state management patterns set in \texttt{AGENTS.md} survived compaction events. File-based instructions proved much more durable than free-form session instructions under the same conditions
+    \item Negative constraints such as ``do not modify files outside this directory'' were respected in both Worktree and Cloud modes, with the git worktree boundary acting as an additional technical safeguard
+    \item Feature Planning scored 4/5 rather than 5/5, because Codex occasionally skipped the planning step on ambiguous sub-tasks and went straight to writing code, reflecting the rushing tendency noted in practitioner reviews \cite{wiegold2026}
 \end{itemize}
 
-The enterprise-grade configurability of \texttt{AGENTS.md} hierarchies---allowing global organizational standards at the repository root and hyper-specific overrides at the microservice directory level---was consistently cited by evaluators as a significant operational advantage over the re-prompting conventions required by tools lacking comparable instruction infrastructure.
+The \texttt{AGENTS.md} hierarchy can be configured at multiple levels: global organizational standards at the repository root, with more specific overrides deeper in the directory tree for individual microservices. This approach was consistently rated by evaluators as a clear operational advantage over tools that require re-stating constraints in every session.
 
 \subsection{Observed Workflow Behavior}
 
 \subsubsection{Cloud Worktree Execution and Parallel Isolation}
-Codex's cloud-native execution model represents the most architecturally distinctive feature among frontier coding tools. Three execution modes are supported: Local (runs on developer machine within the project), Worktree (creates an isolated git worktree on the developer machine), and Cloud (runs in isolated OpenAI-managed containers). The Cloud mode's two-phase execution architecture provides a documented security boundary:
+Codex supports three execution modes: Local (runs on the developer's machine), Worktree (creates an isolated git worktree locally), and Cloud (runs in OpenAI-managed containers). The Cloud mode uses a two-phase design with a clear security boundary:
 \begin{itemize}
-    \item \textbf{Setup Phase}: Internet access enabled for dependency installation; all configured secrets available
-    \item \textbf{Agent Phase}: Internet access disabled by default; all secrets removed before execution begins; network proxy enforced for abuse prevention
+    \item \textbf{Setup Phase}: Internet access is enabled for installing dependencies; all configured secrets are available
+    \item \textbf{Agent Phase}: Internet is off by default; secrets are removed before this phase starts; all network traffic goes through a proxy
 \end{itemize}
 
-Container state is cached for up to 12 hours and automatically invalidated when setup scripts, environment variables, or secrets change, providing reproducible execution environments without per-task infrastructure overhead. Subagents in Codex run in their own isolated containers with scoped file access and no network access, providing a strict security perimeter for parallel subtask execution.
+Container state is cached for up to 12 hours and cleared automatically when setup scripts, environment variables, or secrets change. This gives repeatable environments without extra setup cost per task. Subagents also run in their own isolated containers with limited file access and no network, keeping parallel subtasks properly separated.
 
-In the parallel isolation evaluation, five concurrent tasks were initiated across two repositories. Each task operated on an independent git worktree without conflict, with results reviewable as they completed. This operational model---\textit{delegate and review}---has no direct analogue in single-context tools such as Copilot or Cursor.
+In the parallel isolation test, five concurrent tasks ran across two repositories. Each task worked on its own git worktree with no conflicts, and results were available for review as each task finished. This ``delegate and review'' workflow is not possible with single-context tools like Copilot or Cursor.
 
 \subsubsection{Context Compaction and Long-Horizon Execution}
-GPT-5.4's context compaction is an architectural capability purpose-trained into the model, not an external summarization layer applied post-hoc. When an execution session approaches the context window limit, the model itself prunes earlier history while preserving task-critical state---architectural decisions, constraint specifications, and implementation commitments---enabling coherent continuation across what would otherwise be session boundaries \cite{openai_compaction}.
+GPT-5.4's context compaction is built into the model itself rather than applied on top of it. When a session gets close to the context limit, the model prunes earlier history while keeping the parts it still needs, such as architectural decisions and key constraints, so work can continue without losing track of the goal \cite{openai_compaction}.
 
-In practice, this delivers:
+In practice, this results in:
 \begin{itemize}
-    \item Approximately 20--40\% reduction in total token consumption for sessions exceeding 100,000 tokens
-    \item Approximately 30\% fewer thinking tokens for equivalent reasoning effort compared to predecessor models
-    \item Documented internal OpenAI runs exceeding 24 hours of continuous autonomous execution
+    \item A 20--40\% reduction in total token use for long sessions over 100,000 tokens
+    \item About 30\% fewer reasoning tokens for the same quality of output compared to earlier models
+    \item OpenAI has documented internal runs exceeding 24 hours of continuous autonomous execution
 \end{itemize}
 
-The Token Efficiency criterion scored 4/5, reflecting this advantage tempered by user-reported cases where compaction mid-task caused loss of nuanced working context that had not yet been committed to the task plan. Some practitioners describe this as the agent ``forgetting where it was'' in multi-step refactoring sequences, requiring developer re-contextualization \cite{openai_codex_docs}.
+The Token Efficiency criterion scored 4/5. The compaction capability is genuinely useful, but some developers have reported that mid-task compaction can cause the agent to lose nuanced context it had not yet written down, effectively starting that part of the task over \cite{openai_codex_docs}.
 
-The complementary \textbf{Tool Search} feature addresses a different token efficiency problem. Rather than injecting monolithic 4,000-token tool manifests into every API request, GPT-5.4 dynamically loads tool definitions, MCP server schemas, and API manifests on demand during execution. This architectural optimization produces approximately 47\% fewer input tokens for agentic tasks, substantially reducing the Total Cost of Ownership for high-volume automated pipelines \cite{openai_compaction}.
+The \textbf{Tool Search} feature addresses a separate token problem. Instead of including all tool definitions in every API request, GPT-5.4 loads them on demand during a session. This cuts input token use by roughly 47\% on agentic tasks, which meaningfully lowers the running cost of long automated pipelines \cite{openai_compaction}.
 
 \subsubsection{Fast Mode Velocity}
-Codex's Fast Mode delivers up to 1.5$\times$ faster token velocity using the identical underlying model---a genuine throughput improvement rather than a quality-speed trade-off. This feature was consistently cited across independent practitioner reviews as the most meaningful developer experience improvement in the GPT-5.4 release: ``I would usually rather finish the task and spend the quota than save quota while an agent crawls through the job'' \cite{holter2026}.
+Codex's Fast Mode produces output up to 1.5$\times$ faster using the same model, with no quality reduction. In developer reviews, this was consistently described as the most useful improvement in the GPT-5.4 release: ``I would usually rather finish the task and spend the quota than save quota while an agent crawls through the job'' \cite{holter2026}.
 
-Fast Mode is most effective for well-defined, operationally clear tasks where exhaustive upfront planning would delay rather than improve outcomes. The Response Time / Latency rubric score of 3/5 reflects the counterpart: on complex multi-file tasks requiring deep reasoning, Codex does not invest the same upfront ``thinking budget'' that Claude Code's architecture favors, occasionally producing implementations requiring more downstream correction cycles. The practical guidance is to reserve Fast Mode for execution phases on well-specified tasks and allow standard mode for planning phases on architectural decisions.
+Fast Mode works best on tasks with clear, well-defined requirements. The Response Time / Latency rubric score of 3/5 reflects the flip side: on complex multi-file tasks that need more careful reasoning, Codex does not spend the same amount of upfront planning time that Claude Code does, which can mean more correction needed later. The practical approach is to use Fast Mode for execution work on well-specified tasks and standard mode for planning phases.
 
 \subsubsection{Analytical Problem Solving and Bug Identification}
-A consistent pattern across practitioner evaluations is Codex's exceptional analytical depth when deployed as an autonomous code reviewer or debugger. In direct side-by-side comparisons, practitioners report that for an identical piece of complex software, Claude Code identifies one to two high-level architectural issues while GPT-5.4 excavates four to five granular problems---flagging subtle edge cases, variable type mismatches, implicit nullability violations, and minor state inconsistencies that human reviewers systematically miss \cite{chandler2026}.
+A consistent pattern in practitioner reviews is that Codex is exceptionally thorough when reviewing code or debugging. In direct comparisons on the same codebase, developers report that Claude Code typically finds one to two high-level architectural issues, while GPT-5.4 finds four to five including subtle edge cases, type mismatches, nullability issues, and state inconsistencies that even experienced reviewers miss \cite{chandler2026}.
 
-This depth has been validated in production environments: Codex has been deployed to debug complex WebGL terminal rendering artifacts and deep OS-level Windows memory crashes with a documented success rate exceeding Claude Opus 4.6 on equivalent tasks \cite{chandler2026}. In the evaluation period, Bug Finding, Iterative Refinement, Handling AI Mistakes, and Tech Debt Identification all achieved the maximum score of 5/5.
+This has been demonstrated in real production contexts: Codex has been used to track down complex WebGL rendering bugs and deep Windows memory crashes, with a documented success rate above Claude Opus 4.6 on the same tasks \cite{chandler2026}. During the evaluation, Bug Finding, Iterative Refinement, Handling AI Mistakes, and Tech Debt Identification all scored 5/5.
 
-Sustained execution capability further amplifies this analytical depth. With a well-specified \texttt{PLANS.md} execution file, Codex has been documented running continuously for over 46 minutes---autonomously cycling through reading files, committing changes, testing logic, debugging its own errors, and pushing code without losing operational context \cite{chandler2026}. For legacy remediation workloads, the model has successfully refactored upwards of 12,000 lines of undocumented Python code in single extended sessions, operating with the methodical patience of a senior engineer and silently resolving latent race conditions that had existed in production environments for months.
+The long-running execution capability adds to this. With a well-written \texttt{PLANS.md} file, Codex has been documented running continuously for over 46 minutes, reading files, committing changes, running tests, fixing its own errors, and pushing code without losing context \cite{chandler2026}. For legacy code clean-up, the model has refactored over 12,000 lines of undocumented Python in a single session, fixing race conditions that had been in production for months.
 
 \subsubsection{Destructive Execution Risk}
-The most operationally significant safety concern identified in practitioner community analysis is what this evaluation terms \textit{destructive execution}: Codex's documented tendency, when given underspecified or contradictory instructions, to rush toward completion rather than pausing to seek clarification \cite{wiegold2026}. In documented cases, Codex has completed a portion of a requested refactoring correctly before overwriting working progress with hallucinatory code, resulting in zero net progress and requiring full session rollback \cite{reddit2026}.
+The most significant safety concern from practitioner feedback is what reviewers call \textit{destructive execution}: when given vague or contradictory instructions, Codex tends to push forward and make assumptions rather than stopping to ask for clarification \cite{wiegold2026}. In documented cases, it has completed a portion of a refactoring correctly and then overwritten working code with incorrect output, leaving zero net progress and requiring a full rollback \cite{reddit2026}.
 
-This behavior stands in direct contrast to Claude Code's documented tendency to collaboratively discuss ambiguous intent before executing. The root cause is not a lack of capability but a \textit{failure of evaluation}: Codex does not automatically assess whether its plan is complete before executing it. The full mitigation stack is:
+This contrasts with Claude Code's behavior of pausing on ambiguous instructions to discuss intent before acting. The root cause is not a capability gap; Codex understands the code it is working with. The problem is that it does not automatically check whether its plan is complete before executing. The recommended mitigations are:
 \begin{itemize}
-    \item Comprehensive \texttt{AGENTS.md} negative constraints (explicit ``do not'' rules and permission boundaries)
-    \item Sandbox mode configured to \texttt{workspace-write} rather than \texttt{danger-full-access} for critical sessions
-    \item Approval Policy set to \texttt{on-request} for sessions involving irreversible operations
-    \item Git worktree isolation: even if destructive changes are executed within a worktree, the main branch remains unaffected and the worktree can be discarded cleanly
+    \item Writing comprehensive \texttt{AGENTS.md} files that include explicit ``do not'' rules and permission boundaries
+    \item Setting sandbox mode to \texttt{workspace-write} rather than \texttt{danger-full-access} for sensitive sessions
+    \item Using the \texttt{on-request} approval policy for any session involving irreversible changes
+    \item Running in Worktree or Cloud mode: if destructive changes happen inside a worktree, the main branch is untouched and the worktree can simply be deleted
 \end{itemize}
 
-The git worktree architecture is particularly valuable as a mitigation layer: it converts a potentially catastrophic irreversible action into a discardable branch operation.
+The git worktree design is a particularly practical safeguard here. It turns a potentially serious mistake into a discardable branch, rather than damage to the working tree.
 
 \subsubsection{Rate Limiting Behavior}
-In a notable contrast to Claude Code (which scored 1/5 on Rate Limiting in this evaluation series), Codex achieved 5/5, reflecting substantially more generous utilization allowances on standard Plus subscription tiers. For development teams operating on Plus plans, rate limiting was not a meaningful friction point during the evaluation period.
+Where Claude Code scored 1/5 on Rate Limiting in the same evaluation series, Codex scored 5/5. On standard Plus tier plans, rate limiting was not a problem during the evaluation period.
 
-However, the higher-capability Pro tier presents a documented limitation: approximately 40 minutes of reasoning capacity per 5-hour rolling window. A single complex reasoning-intensive task of 20 minutes can consume half the available Pro allowance, making the tier economically challenging for sustained professional workflows \cite{openai_community2026}. The absence of a mid-tier subscription option between the \$20 Plus and \$200 Pro tiers---in contrast to Anthropic's \$100 Max tier---leaves Pro-tier users with limited options when quota is exhausted other than waiting for quota restoration or downgrading to the medium-effort tier.
+The Pro tier is a different story. It provides roughly 40 minutes of reasoning capacity per 5-hour window. A single complex task lasting 20 minutes can use half the available allowance, which makes sustained professional use on the Pro tier difficult \cite{openai_community2026}. There is also no mid-tier option between the \$20 Plus and \$200 Pro plans, unlike Anthropic which offers a \$100 Max tier, leaving Pro users with limited choices when their quota runs out.
 
 \subsection{Cross-Model Audit Workflow}
-An emergent best practice documented across the practitioner community is the use of Codex as an auditor for Claude-generated code, and vice versa \cite{chandler2026}. GPT-5.4's granular analytical depth makes it exceptionally effective at catching Claude Opus 4.6's occasional over-engineering tendencies, consistently suggesting cleaner, simplified, and more security-conscious implementations. Claude Opus 4.6, in turn, excels at catching architectural inconsistencies and edge case gaps in error handling within Codex-generated code.
+A practical workflow that has emerged in the developer community is using Codex to audit Claude-generated code, and Claude to audit Codex-generated code \cite{chandler2026}. GPT-5.4's detailed analytical review catches Claude's tendency to over-engineer solutions, often suggesting simpler and more secure alternatives. Claude Opus 4.6 in turn catches architectural gaps and missing error handling in Codex's output.
 
-OpenAI has operationalized this workflow through the release of an official Codex plugin for Claude Code, enabling direct cross-provider code review within a single session \cite{mindstudio2026}. Running iterative review cycles---Opus 4.6 critically reviews a Codex plan, Codex reviews the revised Opus implementation---consistently produces superior outcomes to either model operating alone \cite{chandler2026}.
+OpenAI has supported this officially by releasing a Codex plugin for Claude Code, allowing cross-provider review in a single session \cite{mindstudio2026}. Running the two models in alternating review cycles, where each reviews the other's output, consistently produces better results than either model working alone \cite{chandler2026}.
 
 \subsection{Documentation Generation}
-Documentation generation achieved a score of 4.5/5. Codex demonstrates strong capability for generating comprehensive, accurate documentation including inline comments, API doc comments, and README files. The Architecture Summary capability (5/5) reflects GPT-5.4's ability to analyze complex systems including hardware-oriented architectures such as Post Fusion systems involving quantized sub-model deployment on embedded inference hardware, producing structured and technically accurate summaries that span both software and hardware engineering domains.
+Documentation generation scored 4.5/5. Codex reliably produces clear, accurate documentation including inline comments, API doc comments, and README files. The Architecture Summary criterion (5/5) reflects its ability to analyze complex systems and produce structured summaries, including hardware-oriented designs like Post Fusion inference systems with quantized sub-models on embedded hardware.
 
 \section{Discussion}
 
 \subsection{The Analytical Depth Advantage}
-The finding most clearly supported by both rubric scores and independent benchmark data is Codex's superior analytical depth for novel problem-solving. The 4.3 percentage point lead on SWE-Bench Pro (57.7\% vs.\ 53.4\%) is not a marginal measurement difference---it reflects a qualitatively distinct ability to reason from first principles on problems outside the training distribution, rather than retrieving memorized solutions. In practitioner terms, this means Codex systematically surfaces more bugs per review cycle, identifies a broader range of technical debt, and produces solutions less dependent on analogous patterns in its training data \cite{chandler2026}.
+The clearest finding from both the rubric and benchmark data is that Codex is better at solving novel problems. The 4.3 percentage point lead on SWE-Bench Pro (57.7\% vs.\ 53.4\%) is meaningful because this benchmark is specifically designed to prevent models from relying on memorized answers. It measures genuine reasoning, not pattern recall. In practice, this means Codex finds more bugs per review, surfaces a wider range of technical debt, and produces solutions that do not depend on having seen similar problems before \cite{chandler2026}.
 
-For engineering teams whose primary challenge is understanding and improving large, undocumented legacy codebases---particularly those with complex concurrency logic, deep OS-level interactions, or intricate backend API integrations---this analytical edge represents a compelling production argument for Codex as the execution and debugging tool of choice.
+For teams dealing with large, poorly documented legacy codebases, especially those with complex concurrency logic, OS-level integrations, or tangled backend APIs, this makes Codex the stronger choice for debugging and execution work.
 
 \subsection{Cloud Architecture as a Competitive Differentiator}
-Codex's cloud-native execution model, built around git worktree isolation and containerized task execution, provides capabilities with no direct analogue in locally-executed tools. Three advantages stand out for enterprise and team-scale adoption:
+Codex's cloud execution model, built on git worktree isolation and containerized tasks, enables workflows that locally-executed tools simply cannot match. Three advantages stand out:
 
-\textbf{True parallel project execution}: Multiple independent tasks across multiple repositories run simultaneously, each in an isolated container, without contention for local compute resources. A developer can initiate parallel refactoring tasks across distinct microservices and review results as they complete---an operational model that single-context tools cannot support.
+\textbf{Parallel project execution}: Multiple tasks across different repositories can run at the same time, each in its own container, without competing for local resources. A developer can kick off parallel refactoring tasks across multiple microservices and check in on results as they finish.
 
-\textbf{Reproducible execution environments}: Container state is deterministically constructed from setup scripts and cached, providing reproducible execution that local filesystem-dependent tools cannot match. This is directly relevant for regulated environments requiring audit trails and reproducible builds.
+\textbf{Repeatable environments}: Container state is built deterministically from a setup script and cached. This gives consistent, reproducible runs that local tools relying on the developer's filesystem cannot provide. This matters in regulated environments where audit trails and repeatable builds are required.
 
-\textbf{Documented security boundary}: The two-phase execution model (internet-enabled setup, offline agent execution) provides a clear security perimeter. Code exfiltration during the agent execution phase is architecturally prevented, addressing a portion of the IP concern that drives Security \& IP to score 1/5 under general evaluation conditions.
+\textbf{Clear security boundary}: The two-phase execution model (internet-enabled setup, offline agent phase) means code is not being sent out during execution. This addresses part of the IP concern behind the Security \& IP score of 1/5, which mainly reflects anxiety about code leaving the organization's infrastructure at all.
 
-\subsection{Native Compaction vs.\ Session Architecture Discipline}
-Competing tools manage long-context sessions through architectural workarounds: Claude Code uses sub-agent context isolation and developer-initiated summarization prompts. Codex's native compaction takes a fundamentally different approach: the model itself manages its own context window, pruning history while preserving task-critical state without developer intervention.
+\subsection{Native Compaction vs.\ Session Management Workarounds}
+Other tools handle long sessions through workarounds: Claude Code isolates context using sub-agents, and developers manually summarize progress at key points. Codex handles this differently by letting the model itself manage what it keeps and what it drops. Developers do not need to architect sessions around context limits.
 
-The practical consequence is that Codex handles context window transitions more transparently---developers do not need to architect sessions around context limits or manually instruct summarization. The 47\% token reduction from Tool Search compounds this advantage, making Codex the cost-optimal choice for high-volume automated pipelines where total token consumption is the primary economic variable.
+The 47\% token saving from Tool Search adds to this, making Codex the more cost-efficient option for high-volume automated pipelines where token consumption drives cost.
 
-The primary operational caveat remains: compaction can occasionally discard nuanced working context not yet committed to the task plan. Teams running complex refactoring sessions should use \texttt{PLANS.md} execution files to externalize task state explicitly, providing a durable record that survives context compaction events.
+The main caveat is that compaction can occasionally drop context the model had not yet recorded anywhere. Teams running complex multi-file refactoring sessions should use \texttt{PLANS.md} files to write down task state externally, so key decisions survive a compaction event.
 
 \subsection{The Destructive Execution Problem and Its Mitigations}
-The \textit{destructive execution} pattern---Codex's tendency to rush forward with assumptions rather than seeking clarification---is a real and documented friction point \cite{wiegold2026,reddit2026}. It is important to characterize this accurately: this is not a hallucination problem in the traditional sense but a \textit{failure of evaluation}. Codex demonstrably understands the code it is working with; it simply does not automatically assess whether its plan is fully specified before executing it.
+The destructive execution pattern is a genuine, documented issue \cite{wiegold2026, reddit2026}. To be clear about what it is: Codex understands the code it works with. The problem is that it does not automatically verify its plan is complete before starting. When instructions are vague or conflicting, it charges ahead rather than asking questions.
 
-The mitigation is clear and well-defined. The combination of comprehensive \texttt{AGENTS.md} authoring, \texttt{workspace-write} sandbox mode, \texttt{on-request} approval policy, and git worktree isolation creates a defense-in-depth architecture that contains the impact of any individual destructive execution event to a discardable branch. Organizations that invest in this mitigation stack report a substantially improved experience relative to those using Codex in default configuration on underspecified tasks.
+The fix is straightforward but requires upfront work. A combination of thorough \texttt{AGENTS.md} constraints, \texttt{workspace-write} sandbox mode, \texttt{on-request} approval policy, and git worktree isolation creates a safety net that keeps the impact of any single bad execution to a discardable branch. Teams that set this up properly report a much better experience than those running Codex in default configuration on loosely defined tasks.
 
 \subsection{Economic Considerations and Total Cost of Ownership}
-On raw API pricing, Codex Standard is substantially more cost-effective than Claude Opus 4.6: 50\% cheaper on input tokens (\$2.50 vs.\ \$5.00 per million) and 40\% cheaper on output tokens (\$15.00 vs.\ \$25.00 per million). At the cached input tier, Codex (\$0.25/M) is half the cost of Opus 4.6 (\$0.50/M), making iterative development on large codebases significantly more economical.
-
-When combined with the 47\% token reduction from Tool Search, Codex Standard represents the cost-optimal choice for high-volume automated testing, proof-of-concept generation, and bulk refactoring workloads with well-specified \texttt{AGENTS.md} guardrails. Table~\ref{tab:pricing} presents the current pricing landscape.
+Codex Standard is significantly cheaper than Claude Opus 4.6 on raw API pricing: 50\% less on input tokens (\$2.50 vs.\ \$5.00 per million) and 40\% less on output tokens (\$15.00 vs.\ \$25.00 per million). Cached input is also cheaper at \$0.25/M compared to \$0.50/M for Opus 4.6, which helps on iterative work over large codebases. Table~\ref{tab:pricing} shows the full comparison.
 
 \begin{table}[!htbp]
 \caption{API Pricing Comparison (per 1M tokens, verified April 2026)}
@@ -350,50 +349,52 @@ When combined with the 47\% token reduction from Tool Search, Codex Standard rep
 \toprule
 \textbf{Model} & \textbf{Input} & \textbf{Output} & \textbf{Cached} & \textbf{Context} \\
 \midrule
-Codex (GPT-5.4) & \$2.50 & \$15.00 & \$0.25 & 1.05M \\
+Codex (GPT-5.4) & \$2.50 & \$15.00 & \$0.25 & 272K (1.05M exp.) \\
 Claude Opus 4.6 & \$5.00 & \$25.00 & \$0.50 & 1.00M \\
 Codex Pro & \$30.00 & \$180.00 & N/A & $>$272K \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-However, Total Cost of Ownership (TCO) shifts considerably at scale. Codex's lower accuracy on complex multi-file coordinated tasks---evidenced by its $\sim$1.4 percentage point deficit on SWE-Bench Verified relative to Claude Opus 4.6---leads to higher rates of automated retries, destructive execution rollbacks, and required developer debugging intervention. When the senior developer hourly cost of untangling a hallucinatory implementation is factored in, TCO can favor the more expensive but more architecturally reliable Claude Opus 4.6 for novel multi-file work where architectural integrity is the primary constraint.
+Combined with Tool Search's 47\% token reduction, Codex Standard is the most cost-effective choice for high-volume automated testing, prototyping, and bulk refactoring work with well-written \texttt{AGENTS.md} guardrails.
+
+That said, total cost shifts on complex work. Codex's slightly lower accuracy on coordinated multi-file tasks leads to more retries, more rollbacks, and more developer time spent fixing incorrect output. When senior developer time is factored in, Claude Opus 4.6 can end up cheaper for work where getting the architecture right the first time matters most.
 
 \subsection{The Dual-Wielding Recommendation}
-The most well-corroborated finding from practitioner community analysis is that the optimal deployment strategy is not a single-model selection but a \textit{dual-wielding} workflow \cite{chandler2026}. Claude Opus 4.6 and Codex possess highly asymmetric capability profiles that render them strategic complements rather than substitutes:
+The most consistently supported finding from developer community analysis is that using both tools together produces the best results \cite{chandler2026}. Claude Opus 4.6 and Codex have complementary strengths:
 
 \begin{itemize}
-    \item \textbf{Claude Opus 4.6 as architect}: UI generation, complex multi-file architectural refactoring, ambiguous task handling, proactive QA dispatch via Agent Teams parallel orchestration
-    \item \textbf{Codex as executor and analytical auditor}: Backend logic implementation, concurrency debugging, technical debt excavation, cross-model code review of Claude-generated code, and high-volume automated pipeline execution
+    \item \textbf{Claude Opus 4.6 for architecture}: UI generation, large multi-file refactoring, handling ambiguous requirements, and running automatic QA checks through its Agent Teams feature
+    \item \textbf{Codex for execution and review}: Backend logic, concurrency debugging, technical debt, reviewing Claude-generated code, and running high-volume automated pipelines
 \end{itemize}
 
-Engineering organizations operating at the frontier of development efficiency route tasks dynamically based on their cognitive requirements: architectural depth and creativity to Claude, execution velocity and analytical verification to Codex. This dual-wielding workflow is directly enabled by OpenAI's official Codex plugin for Claude Code, allowing cross-provider review within a single integrated session \cite{mindstudio2026}.
+The best teams route tasks based on what each model is good at: depth and design to Claude, speed and analytical verification to Codex. OpenAI's official Codex plugin for Claude Code supports this directly by allowing cross-provider review in a single integrated session \cite{mindstudio2026}.
 
-\subsection{Terminal Regression: A Practical Caveat}
-An operationally relevant finding for DevOps-focused teams is that GPT-5.4 scores 75.1\% on Terminal-Bench 2.0---lower than its specialized predecessor GPT-5.3-Codex at 77.3\% \cite{nxcode2026}. The unification of GPT-5.4 with the Codex model provided substantial gains in visual reasoning and multimodal capability but introduced a measurable regression in raw terminal fidelity. Teams with workflows heavily dependent on SSH operations, complex Git automation, shell script debugging, and build system manipulation should note that GPT-5.3-Codex remains the superior option for pure terminal-centric workloads. For mixed workflows combining terminal operations with code generation, the generalization advantages of GPT-5.4 outweigh the terminal regression.
+\subsection{Terminal Regression: A Practical Note}
+For teams that rely heavily on terminal operations, GPT-5.4 scores 75.1\% on Terminal-Bench 2.0, which is actually slightly behind its predecessor GPT-5.3-Codex at 77.3\% \cite{nxcode2026}. Merging the Codex model into GPT-5.4 brought big gains in visual reasoning and general capability but came with a small regression in raw terminal performance. Teams whose workflows depend heavily on SSH, complex Git scripting, shell debugging, or build system automation should be aware that GPT-5.3-Codex is still the better choice for purely terminal-heavy use. For mixed workflows, the broader gains from GPT-5.4 outweigh this regression.
 
 \section{Limitations}
 
-\textbf{Single project, limited task scope}. All conclusions are drawn from an evaluation in one codebase. Generalizability to different languages, frameworks, or team sizes is not established.
+\textbf{Single project, limited task scope}. All conclusions come from one codebase. How well they generalize to other languages, frameworks, or team sizes is unknown.
 
-\textbf{No controlled comparison}. Without a direct controlled comparison against competing tools on identical tasks, relative productivity claims cannot be causally attributed to Codex specifically.
+\textbf{No controlled comparison}. Without running the same tasks on competing tools under the same conditions, productivity claims cannot be directly attributed to Codex.
 
-\textbf{Benchmark sourcing and scaffolding variability}. Several benchmarks, particularly SWE-Bench Pro and GDPval, are reported from secondary aggregator sources where the exact evaluation scaffolding may differ from primary published conditions. GDPval figures are reported as percentages in secondary sources but the primary scoring system is Elo-based (GPT-5.4: 1672; Claude Opus 4.6: 1606); percentage representations are approximations. The MRCR v2 score at 1M context for GPT-5.4 could not be verified from any indexed source at time of writing and should be treated as an approximation.
+\textbf{Benchmark sourcing}. Some benchmarks, particularly SWE-Bench Pro and GDPval, are taken from secondary aggregator sources where the exact evaluation setup may differ from primary published conditions. GDPval scores are shown as percentages in secondary sources, but the primary scoring system is Elo-based (GPT-5.4: 1672; Claude Opus 4.6: 1606); the percentage figures are approximations. The MRCR v2 score for GPT-5.4 at 1M context could not be confirmed from any indexed source at time of writing.
 
-\textbf{Snapshot validity}. Codex and its cloud execution infrastructure are actively evolving. Rate limiting, pricing, compaction behavior, and benchmark positions may change with future releases. Terminal-Bench regression may be addressed in future GPT-5.4 updates.
+\textbf{Snapshot validity}. Codex is actively developed. Rate limits, pricing, compaction behavior, and benchmark scores may all change with future updates.
 
-\textbf{Destructive execution variability}. The destructive execution behavior is prompt- and task-dependent. Its frequency in production contexts will vary substantially based on \texttt{AGENTS.md} quality, sandbox configuration, and task specificity. Evaluations conducted under tight constraint specifications will observe significantly lower incidence than those conducted on loosely defined tasks.
+\textbf{Destructive execution variability}. How often destructive execution occurs depends heavily on how well the task is specified and how the sandbox is configured. Evaluations run with tight \texttt{AGENTS.md} constraints will see far fewer incidents than those run with vague or minimal instructions.
 
 \section{Conclusion}
 This paper evaluated Codex (GPT-5.4) as an AI coding assistant through a practitioner benchmark grounded in production feature implementation. We address our three research questions as follows:
 
-\textbf{Q1 (Core Capability)}. Codex functions effectively as an AI coding assistant for structured, convention-driven codebases, with particular strength in analytical problem solving, technical debt identification, and sustained execution. Its SWE-Bench Pro score of 57.7\% reflects a genuine and verified superiority in novel engineering reasoning. The 24-file feature implementation was completed with full Clean Architecture integrity, and Bug Finding, Iterative Refinement, Handling AI Mistakes, and Tech Debt Identification all achieved the maximum score of 5/5. The primary caveat is the destructive execution tendency under underspecified prompts, which requires investment in \texttt{AGENTS.md} authoring and sandbox configuration to mitigate effectively.
+\textbf{Q1 (Core Capability)}. Codex works well as an AI coding assistant in structured, convention-driven codebases, particularly for analytical problem solving, technical debt identification, and sustained autonomous execution. Its SWE-Bench Pro score of 57.7\% confirms a genuine advantage on novel engineering problems. The 24-file feature implementation completed with full Clean Architecture integrity, and Bug Finding, Iterative Refinement, Handling AI Mistakes, and Tech Debt Identification all scored 5/5. The main caveat is the destructive execution tendency on vague tasks, which requires investment in \texttt{AGENTS.md} setup and sandbox configuration to manage.
 
-\textbf{Q2 (Operational Characteristics)}. Codex's operational profile is defined by three distinctive characteristics: cloud-native sandboxed execution via git worktrees (enabling parallel isolation without consuming local developer resources), purpose-trained context compaction (enabling 24+ hour sessions with $\sim$30\% fewer thinking tokens and $\sim$47\% reduced input token consumption via Tool Search), and Fast Mode velocity (up to 1.5$\times$ token throughput for well-defined tasks). Rate limiting is not a friction point on standard Plus tiers (5/5), a significant advantage over competing tools. The primary operational gaps are the Pro tier reasoning quota ceiling and the Security \& IP score (1/5), which reflects the inherent constraints of transmitting proprietary code to cloud-hosted model infrastructure.
+\textbf{Q2 (Operational Characteristics)}. Three features define Codex's operational profile: cloud execution via git worktrees (parallel isolation with no local resource use), native context compaction (sessions of 24 hours or more, with roughly 30\% fewer reasoning tokens and 47\% lower input token use via Tool Search), and Fast Mode (up to 1.5$\times$ output speed on well-defined tasks). Rate limiting is not an issue on standard Plus plans (5/5), which is a meaningful advantage over competing tools. The main gaps are the Pro tier quota ceiling and the Security \& IP score (1/5), which reflects the inherent concern with sending proprietary code to cloud-hosted infrastructure.
 
-\textbf{Q3 (Architectural Differentiators)}. Codex's git worktree architecture, cloud execution model, and native compaction collectively provide competitive capabilities with no direct analogues in locally-executed tools. True parallel task execution across multiple repositories, reproducible containerized environments, and the Tool Search token reduction position Codex as the cost-optimal choice for high-volume automated pipelines. The official Codex plugin for Claude Code enables the dual-wielding workflow that practitioners consistently identify as the highest-productivity deployment pattern, routing architectural creativity to Claude Opus 4.6 and execution depth to Codex.
+\textbf{Q3 (Architectural Differentiators)}. Codex's git worktree architecture, cloud execution model, and native compaction offer capabilities that locally-executed tools do not have. Parallel task execution across multiple repositories, repeatable containerized environments, and the Tool Search token savings make it the most cost-effective option for high-volume automated pipelines. The official Codex plugin for Claude Code enables the dual-wielding workflow that practitioners consistently identify as the highest-productivity setup, sending design and architecture work to Claude Opus 4.6 and execution and verification work to Codex.
 
-The overall finding is that Codex (GPT-5.4) is the apex execution engine and analytical debugger in the current frontier coding tool landscape. Its strengths---analytical depth on novel problems, cloud-native parallelism, token efficiency at scale, and first-in-class desktop automation---are precisely the capabilities that complement Claude Code's architectural creativity and parallel orchestration strengths. For teams willing to invest in the operational discipline of \texttt{AGENTS.md} authoring and sandbox configuration, Codex represents a compelling productivity multiplier whose analytical capabilities, economic efficiency, and parallel execution architecture make it an essential component of any serious agentic development workflow.
+The overall finding is that Codex (GPT-5.4) is the strongest execution and debugging tool in the current agentic coding landscape. Its advantages in analytical depth, cloud-native parallelism, token efficiency at scale, and desktop automation are exactly where it complements Claude Code's strengths in architectural design and multi-agent orchestration. For teams willing to put in the work to set up \texttt{AGENTS.md} and sandbox configuration properly, Codex is a strong productivity tool whose analytical capabilities, running costs, and parallel execution model make it a practical part of any serious agentic development workflow.
 
 \begin{thebibliography}{00}
 \setlength{\itemsep}{-2pt}
@@ -433,13 +434,13 @@ BenchLM, ``GPT-5.4 Benchmark Results,'' 2026. [Online]. Available: \url{https://
 Vellum AI, ``Claude Opus 4.6 Benchmarks and Model Card,'' 2026. [Online]. Available: \url{https://www.vellum.ai/blog/claude-opus-4-6-benchmarks}
 
 \bibitem{chandler2026}
-C.~Nguyen, ``Codex with GPT-5.4 vs Claude Code with Opus 4.6 --- Why I Now Use Both,'' 2026. [Online]. Available: \url{https://chandlernguyen.com/blog/2026/03/13/codex-gpt-5-4-vs-claude-code-opus-4-6-dual-wielding-ai-coding-tools/}
+C.~Nguyen, ``Codex with GPT-5.4 vs Claude Code with Opus 4.6 -- Why I Now Use Both,'' 2026. [Online]. Available: \url{https://chandlernguyen.com/blog/2026/03/13/codex-gpt-5-4-vs-claude-code-opus-4-6-dual-wielding-ai-coding-tools/}
 
 \bibitem{holter2026}
 A.~Holter, ``GPT-5.4 Fast Mode Is the Best Part of the Release,'' 2026. [Online]. Available: \url{https://adam.holter.com/gpt-5-4-fast-mode-is-the-best-part-of-the-release/}
 
 \bibitem{wiegold2026}
-T.~Wiegold, ``I Tested GPT 5.4 Against Every Rival --- Here's My Honest Review,'' 2026. [Online]. Available: \url{https://thomas-wiegold.com/blog/i-tested-gpt-5-4-against-every-rival/}
+T.~Wiegold, ``I Tested GPT 5.4 Against Every Rival -- Here's My Honest Review,'' 2026. [Online]. Available: \url{https://thomas-wiegold.com/blog/i-tested-gpt-5-4-against-every-rival/}
 
 \bibitem{reddit2026}
 OpenAI Developer Community, ``GPT-5.4 in Codex Feels Degraded,'' 2026. [Online]. Available: \url{https://community.openai.com/t/gpt-5-4-in-codex-feels-degraded/1378747}
@@ -454,7 +455,7 @@ MindStudio, ``OpenAI Codex Plugin for Claude Code: Cross-Provider Review,'' 2026
 OpenAI, ``Codex Developer Documentation,'' 2026. [Online]. Available: \url{https://developers.openai.com/codex}
 
 \bibitem{openai_cloud_envs}
-OpenAI, ``Cloud Environments --- Codex Web,'' 2026. [Online]. Available: \url{https://developers.openai.com/codex/cloud/environments}
+OpenAI, ``Cloud Environments -- Codex Web,'' 2026. [Online]. Available: \url{https://developers.openai.com/codex/cloud/environments}
 
 \bibitem{openai_compaction}
 OpenAI, ``Building More with GPT-5.1-Codex-Max,'' 2026. [Online]. Available: \url{https://openai.com/index/gpt-5-1-codex-max/}
