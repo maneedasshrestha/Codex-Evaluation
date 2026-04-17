@@ -22,7 +22,7 @@
 \begin{abstract}
 Codex (OpenAI, 2026), powered by the unified GPT-5.4 architecture, is OpenAI's agentic coding assistant featuring cloud-native sandboxed execution, git worktree isolation, purpose-trained context compaction, and a dual-layered security model. We evaluate it as an AI coding assistant through a practitioner benchmark involving real feature implementation in a production SaaS codebase, assessing eight dimensions: workflow integration, code generation quality, contextual reasoning, architectural adherence, problem-solving capability, documentation generation, operational characteristics, and overall productivity impact.
 
-Using a 26-criterion rubric (weighted mean: 4.50/5.00, 90.0\%), published benchmark triangulation verified against primary sources, and practitioner community sentiment analysis, we find that Codex excels at analytical problem solving, fast-mode execution velocity, sustained long-horizon task completion, and technical debt remediation. Its SWE-Bench Pro leadership (57.7\% vs.\ Claude Opus 4.6's 53.4\%) reflects superior novel algorithmic reasoning, while its OSWorld-Verified score (75.0\%) makes it the first general-purpose AI model to definitively exceed the human expert threshold (72.4\%) in desktop automation. Key limitations include a documented tendency toward destructive execution under underspecified prompts, security and IP constraints inherent to cloud-hosted architectures, and rate-limiting friction on professional Pro-tier subscriptions. These findings offer practical guidance for teams evaluating agentic AI coding assistants for production use.
+Using a 26-criterion rubric (weighted mean: 4.50/5.00, 90.0\%), published benchmark triangulation verified against primary sources, and practitioner community sentiment analysis, we find that Codex excels at analytical problem solving, fast-mode execution velocity, sustained long-horizon task completion, and technical debt remediation. Its SWE-Bench Pro leadership (57.7\% vs.\ Claude Opus 4.6's 53.4\%) reflects superior novel algorithmic reasoning, while its OSWorld-Verified score (75.0\%) leads all frontier AI models in desktop automation, exceeding the human expert threshold (72.4\%) by a substantial 2.6 percentage point margin. Key limitations include a documented tendency toward destructive execution under underspecified prompts, security and IP constraints inherent to cloud-hosted architectures, and rate-limiting friction on professional Pro-tier subscriptions. These findings offer practical guidance for teams evaluating agentic AI coding assistants for production use.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -70,7 +70,7 @@ The evaluation of AI coding assistants has evolved through several benchmark gen
 
 The SWE-Bench ecosystem has itself bifurcated. SWE-Bench Verified, which tests standardized and heavily vetted pull request resolution, shows near-parity between GPT-5.4 ($\sim$80.0\%) and Claude Opus 4.6 (81.4\%), with Opus 4.6's advantage reflecting superior meticulous execution of well-defined patterns \cite{vellum2026}. The more consequential metric is \textbf{SWE-Bench Pro}, specifically engineered to resist training data memorization by forcing agents to rely on novel logical reasoning rather than pattern matching. On this benchmark, GPT-5.4 achieves 57.7\%, outperforming Claude Opus 4.6's 53.4\%---a 4.3 percentage point advantage that reflects genuine superiority in algorithmic synthesis and structural deduction when confronted with problems outside the training distribution \cite{morphllm2026}.
 
-OSWorld-Verified extends evaluation into autonomous desktop navigation, measuring an AI agent's ability to interact with desktop GUIs, analyze high-resolution screenshots, and complete multi-step workflows. GPT-5.4's score of 75.0\% marks the first time a general-purpose AI has definitively exceeded the human expert baseline of 72.4\% on complex desktop automation tasks, powered by a vision architecture that processes images containing over 10 million pixels without destructive compression \cite{nxcode2026}.
+OSWorld-Verified extends evaluation into autonomous desktop navigation, measuring an AI agent's ability to interact with desktop GUIs, analyze high-resolution screenshots, and complete multi-step workflows. GPT-5.4's score of 75.0\% leads frontier AI models on complex desktop automation tasks, exceeding the human expert baseline of 72.4\% by a 2.6 percentage point margin and outperforming Claude Opus 4.6 (72.7\%) by 2.3 percentage points, powered by a vision architecture that processes images containing over 10 million pixels without destructive compression \cite{nxcode2026}.
 
 \subsection{Developer Productivity Studies}
 A landmark randomized controlled trial involving over 4,000 developers found that GitHub Copilot reduced mean task completion time by approximately 55\% for new coding tasks, with junior developers showing disproportionate gains \cite{peng2023copilot}. McKinsey Global Institute reported a 26\% productivity increase in developer output when using AI tools, measured as story points per sprint \cite{mckinsey2023}.
@@ -128,7 +128,7 @@ Codex was evaluated across multiple task categories over a structured evaluation
 \subsection{Quantitative Rubric Scores}
 Table~\ref{tab:category_scores} presents category-level scores; the full 26-criterion breakdown is in Table~\ref{tab:full_rubric}. The weighted mean was 4.50 / 5.00 (90.0\%).
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \caption{Category-Level Rubric Scores (1 to 5 scale)}
 \label{tab:category_scores}
 \centering
@@ -139,10 +139,10 @@ Table~\ref{tab:category_scores} presents category-level scores; the full 26-crit
 \midrule
 Workflow and Setup & 5.00 \\
 Code Generation Quality & 4.50 \\
-Context and Memory & 4.40 \\
+Context and Memory & 4.50 \\
 Architecture and Planning & 4.75 \\
 Problem Solving & 5.00 \\
-Documentation & 5.00 \\
+Documentation & 4.50 \\
 Operational / Non-Functional & 3.60 \\
 Overall Productivity Impact & 5.00 \\
 \midrule
@@ -151,10 +151,11 @@ Overall Productivity Impact & 5.00 \\
 \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \caption{Full 26-Criterion Rubric Scores}
 \label{tab:full_rubric}
 \centering
+\small
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llc@{}}
 \toprule
@@ -173,7 +174,7 @@ Overall Productivity Impact & 5.00 \\
 \multirow{5}{*}{Context \& Memory}
  & Instruction Following & 4 \\
  & Context Awareness & 5 \\
- & Context Window Limits & 4 \\
+ & Context Window Limits & 4.5 \\
  & Token Efficiency & 4 \\
  & Project-Level Instructions & 5 \\
 \cmidrule(l){2-3}
@@ -196,7 +197,7 @@ Overall Productivity Impact & 5.00 \\
  & IDE Integration & 5 \\
  & Rate Limiting & 5 \\
 \cmidrule(l){2-3}
-Documentation & Documentation \& Comments & 5 \\
+Documentation & Documentation \& Comments & 4.5 \\
 \cmidrule(l){2-3}
 Overall Impact & Productivity Observations & 5 \\
 \bottomrule
@@ -206,19 +207,19 @@ Overall Impact & Productivity Observations & 5 \\
 \subsection{External Benchmark Triangulation}
 Table~\ref{tab:benchmarks} presents Codex's performance across major AI coding and agentic benchmarks, compared against Claude Opus 4.6. All figures are sourced from independent evaluators and cross-verified against official primary documentation.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \caption{Codex (GPT-5.4) vs.\ Claude Opus 4.6: Key Benchmark Results}
 \label{tab:benchmarks}
 \centering
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{5pt}
 \begin{tabular}{@{}lrrl@{}}
 \toprule
-\textbf{Benchmark} & \textbf{Codex} & \textbf{Opus 4.6} & \textbf{Domain} \\
+\textbf{Benchmark} & \textbf{Codex (GPT-5.4)} & \textbf{Claude Opus 4.6} & \textbf{Domain} \\
 \midrule
 SWE-Bench Verified & $\sim$80.0\% & 81.4\% & Standard issue resolution \\
 SWE-Bench Pro & \textbf{57.7\%} & 53.4\% & Novel engineering logic \\
-OSWorld-Verified & \textbf{75.0\%} & 72.7\% & Desktop automation (Human: 72.4\%) \\
-Terminal-Bench 2.0 & \textbf{75.1\%} & 65.4\% & CLI \& agentic terminal ops \\
+OSWorld-Verified & \textbf{75.0\%} & 72.7\% & Desktop automation (Human baseline: 72.4\%) \\
+Terminal-Bench 2.0 & \textbf{75.1\%} & 65.4\% & CLI \& agentic terminal operations \\
 Toolathlon & \textbf{54.6\%} & 47.2\% & External tool invocation \\
 BrowseComp & 82.7\% & \textbf{84.0\%} & Multi-step agentic web search \\
 MMMU Pro (w/ tools) & \textbf{81.2\%} & 77.3\% & Visual \& multimodal reasoning \\
@@ -226,7 +227,7 @@ MRCR v2 (1M context) & $\sim$70.0\%$^\dagger$ & \textbf{76.0\%} & Long-context r
 \bottomrule
 \multicolumn{4}{@{}l}{\footnotesize $^\dagger$GPT-5.4 1M-context MRCR score unverifiable from indexed sources; approximate.}
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{AGENTS.md Constraint Compliance Evaluation}
 Codex demonstrated strong and consistent fidelity to project-level architectural constraints specified in \texttt{AGENTS.md}. The deterministic instruction hierarchy---CLI flags $\rightarrow$ project-scoped \texttt{AGENTS.md} files $\rightarrow$ global user configuration $\rightarrow$ system defaults---was respected across all evaluation sessions, including post-compaction segments where free-form session context had been pruned.
@@ -304,7 +305,7 @@ An emergent best practice documented across the practitioner community is the us
 OpenAI has operationalized this workflow through the release of an official Codex plugin for Claude Code, enabling direct cross-provider code review within a single session \cite{mindstudio2026}. Running iterative review cycles---Opus 4.6 critically reviews a Codex plan, Codex reviews the revised Opus implementation---consistently produces superior outcomes to either model operating alone \cite{chandler2026}.
 
 \subsection{Documentation Generation}
-Documentation generation achieved the maximum score of 5/5. Codex demonstrates strong capability for generating comprehensive, accurate documentation including inline comments, API doc comments, and README files. The Architecture Summary capability (5/5) reflects GPT-5.4's ability to analyze complex systems including hardware-oriented architectures such as Post Fusion systems involving quantized sub-model deployment on embedded inference hardware, producing structured and technically accurate summaries that span both software and hardware engineering domains.
+Documentation generation achieved a score of 4.5/5. Codex demonstrates strong capability for generating comprehensive, accurate documentation including inline comments, API doc comments, and README files. The Architecture Summary capability (5/5) reflects GPT-5.4's ability to analyze complex systems including hardware-oriented architectures such as Post Fusion systems involving quantized sub-model deployment on embedded inference hardware, producing structured and technically accurate summaries that span both software and hardware engineering domains.
 
 \section{Discussion}
 
@@ -339,11 +340,12 @@ On raw API pricing, Codex Standard is substantially more cost-effective than Cla
 
 When combined with the 47\% token reduction from Tool Search, Codex Standard represents the cost-optimal choice for high-volume automated testing, proof-of-concept generation, and bulk refactoring workloads with well-specified \texttt{AGENTS.md} guardrails. Table~\ref{tab:pricing} presents the current pricing landscape.
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \caption{API Pricing Comparison (per 1M tokens, verified April 2026)}
 \label{tab:pricing}
 \centering
-\setlength{\tabcolsep}{4pt}
+\small
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 \textbf{Model} & \textbf{Input} & \textbf{Output} & \textbf{Cached} & \textbf{Context} \\
@@ -395,6 +397,7 @@ The overall finding is that Codex (GPT-5.4) is the apex execution engine and ana
 
 \begin{thebibliography}{00}
 \setlength{\itemsep}{-2pt}
+\sloppy
 
 \bibitem{chen2021evaluating}
 M.~Chen et~al., ``Evaluating Large Language Models Trained on Code,'' arXiv preprint arXiv:2107.03374, 2021.
@@ -418,43 +421,43 @@ METR, ``Measuring the Impact of Early-2025 AI on Experienced Open-Source Develop
 J.~W.~Creswell and V.~L.~Plano Clark, \textit{Designing and Conducting Mixed Methods Research}, 3rd~ed.\ Thousand Oaks, CA: SAGE Publications, 2018.
 
 \bibitem{morphllm2026}
-MorphLLM, ``SWE-Bench Pro Leaderboard,'' 2026. [Online]. Available: https://www.morphllm.com/swe-bench-pro
+MorphLLM, ``SWE-Bench Pro Leaderboard,'' 2026. [Online]. Available: \url{https://www.morphllm.com/swe-bench-pro}
 
 \bibitem{nxcode2026}
-NxCode, ``GPT-5.4 Complete Guide 2026: Features, Pricing, Benchmarks \& How to Use,'' 2026. [Online]. Available: https://www.nxcode.io/resources/news/gpt-5-4-complete-guide-features-pricing-models-2026
+NxCode, ``GPT-5.4 Complete Guide 2026: Features, Pricing, Benchmarks \& How to Use,'' 2026. [Online]. Available: \url{https://www.nxcode.io/resources/news/gpt-5-4-complete-guide-features-pricing-models-2026}
 
 \bibitem{benchlm2026}
-BenchLM, ``GPT-5.4 Benchmark Results,'' 2026. [Online]. Available: https://benchlm.ai/models/gpt-5-4
+BenchLM, ``GPT-5.4 Benchmark Results,'' 2026. [Online]. Available: \url{https://benchlm.ai/models/gpt-5-4}
 
 \bibitem{vellum2026}
-Vellum AI, ``Claude Opus 4.6 Benchmarks and Model Card,'' 2026. [Online]. Available: https://www.vellum.ai/blog/claude-opus-4-6-benchmarks
+Vellum AI, ``Claude Opus 4.6 Benchmarks and Model Card,'' 2026. [Online]. Available: \url{https://www.vellum.ai/blog/claude-opus-4-6-benchmarks}
 
 \bibitem{chandler2026}
-C.~Nguyen, ``Codex with GPT-5.4 vs Claude Code with Opus 4.6 --- Why I Now Use Both,'' 2026. [Online]. Available: https://chandlernguyen.com/blog/2026/03/13/codex-gpt-5-4-vs-claude-code-opus-4-6-dual-wielding-ai-coding-tools/
+C.~Nguyen, ``Codex with GPT-5.4 vs Claude Code with Opus 4.6 --- Why I Now Use Both,'' 2026. [Online]. Available: \url{https://chandlernguyen.com/blog/2026/03/13/codex-gpt-5-4-vs-claude-code-opus-4-6-dual-wielding-ai-coding-tools/}
 
 \bibitem{holter2026}
-A.~Holter, ``GPT-5.4 Fast Mode Is the Best Part of the Release,'' 2026. [Online]. Available: https://adam.holter.com/gpt-5-4-fast-mode-is-the-best-part-of-the-release/
+A.~Holter, ``GPT-5.4 Fast Mode Is the Best Part of the Release,'' 2026. [Online]. Available: \url{https://adam.holter.com/gpt-5-4-fast-mode-is-the-best-part-of-the-release/}
 
 \bibitem{wiegold2026}
-T.~Wiegold, ``I Tested GPT 5.4 Against Every Rival --- Here's My Honest Review,'' 2026. [Online]. Available: https://thomas-wiegold.com/blog/i-tested-gpt-5-4-against-every-rival/
+T.~Wiegold, ``I Tested GPT 5.4 Against Every Rival --- Here's My Honest Review,'' 2026. [Online]. Available: \url{https://thomas-wiegold.com/blog/i-tested-gpt-5-4-against-every-rival/}
 
 \bibitem{reddit2026}
-OpenAI Developer Community, ``GPT-5.4 in Codex Feels Degraded,'' 2026. [Online]. Available: https://community.openai.com/t/gpt-5-4-in-codex-feels-degraded/1378747
+OpenAI Developer Community, ``GPT-5.4 in Codex Feels Degraded,'' 2026. [Online]. Available: \url{https://community.openai.com/t/gpt-5-4-in-codex-feels-degraded/1378747}
 
 \bibitem{openai_community2026}
-OpenAI Developer Community, ``Understanding the New Codex Limit System After the April 9 Update,'' 2026. [Online]. Available: https://community.openai.com/t/understanding-the-new-codex-limit-system-after-the-april-9-update/1378768
+OpenAI Developer Community, ``Understanding the New Codex Limit System After the April 9 Update,'' 2026. [Online]. Available: \url{https://community.openai.com/t/understanding-the-new-codex-limit-system-after-the-april-9-update/1378768}
 
 \bibitem{mindstudio2026}
-MindStudio, ``OpenAI Codex Plugin for Claude Code: Cross-Provider Review,'' 2026. [Online]. Available: https://www.mindstudio.ai/blog/openai-codex-plugin-claude-code-cross-provider-review
+MindStudio, ``OpenAI Codex Plugin for Claude Code: Cross-Provider Review,'' 2026. [Online]. Available: \url{https://www.mindstudio.ai/blog/openai-codex-plugin-claude-code-cross-provider-review}
 
 \bibitem{openai_codex_docs}
-OpenAI, ``Codex Developer Documentation,'' 2026. [Online]. Available: https://developers.openai.com/codex
+OpenAI, ``Codex Developer Documentation,'' 2026. [Online]. Available: \url{https://developers.openai.com/codex}
 
 \bibitem{openai_cloud_envs}
-OpenAI, ``Cloud Environments --- Codex Web,'' 2026. [Online]. Available: https://developers.openai.com/codex/cloud/environments
+OpenAI, ``Cloud Environments --- Codex Web,'' 2026. [Online]. Available: \url{https://developers.openai.com/codex/cloud/environments}
 
 \bibitem{openai_compaction}
-OpenAI, ``Building More with GPT-5.1-Codex-Max,'' 2026. [Online]. Available: https://openai.com/index/gpt-5-1-codex-max/
+OpenAI, ``Building More with GPT-5.1-Codex-Max,'' 2026. [Online]. Available: \url{https://openai.com/index/gpt-5-1-codex-max/}
 
 \end{thebibliography}
 
